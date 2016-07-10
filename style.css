@@ -152,6 +152,7 @@ body {
 }
 
 .questionContainer form .questions {
+	width: 75%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -160,21 +161,42 @@ body {
 
 .Api {
 	opacity: 0;
-	transition: all 0.35s ease;
+	position: relative;
+	left: -50%;
 }
 
 .Api.active {
-	opacity: 1;
+	opacity: 0;
 	margin: 10px 0;
 	padding: 10px;
 	cursor: pointer;
-	transition: all 0.35s ease;
 	border: 3px solid transparent;
 	border-radius: 5px;
 }
 
 .Api.active:hover {
 	border-color: pink;
+}
+
+.Api.active.move {
+	opacity: 1;
+	left: 0;
+}
+
+.questions .Api.active:nth-child(1) {
+	transition: all 0.5s ease 0.35s, border 0.5s ease;
+}
+
+.questions .Api.active:nth-child(2) {
+	transition: all 0.5s ease 0.7s, border 0.5s ease;
+}
+
+.questions .Api.active:nth-child(3) {
+	transition: all 0.5s ease 1.05s, border 0.5s ease;
+}
+
+.questions .Api.active:nth-child(4) {
+	transition: all 0.5s ease 1.4s, border 0.5s ease;
 }
 
 /* map info */
@@ -197,7 +219,7 @@ body {
 
 .mapContainer.active.move {
 	left: 0;
-	transition: all 1s ease-in;
+	transition: all 0.5s ease-in;
 }
 
 #map-canvas {
@@ -242,6 +264,7 @@ body {
 		flex-direction: column;
 		align-items: center;
 		margin: 5px 15px;
+		width: 100%;
 	}
 	.questionContainer form.active h2 {
 		margin: 15px 0;
@@ -250,14 +273,13 @@ body {
 
 	.Api {
 		opacity: 0;
-		transition: all 0.35s ease;
+		left: -30%;
 	}
 
 	.Api.active {
-		opacity: 1;
+		opacity: 0;
 		margin: 10px 0;
 		cursor: pointer;
-		transition: all 0.35s ease;
 		border: 3px solid transparent;
 		transform: skewX(4deg) rotate(4deg);
 	}

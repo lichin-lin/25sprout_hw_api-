@@ -1,6 +1,7 @@
 /* global google */
 /* global fbmax */
 /* global fbName */
+
 let oldman;
 let questionCounter = 0;
 const oldmanCounter = [0, 0, 0, 0];
@@ -19,6 +20,9 @@ function generateQuestion() {
 		$('.questionContainer form:last-child .questions').append(newQuestion);
 		newQuestion.addClass('active');
 	}
+	setTimeout(() => {
+		$(".Api").addClass('move');
+	}, 1);
 	questionCounter += 1;
 }
 
@@ -55,12 +59,15 @@ $('.oldBtn').on('click', () => {
 	.done((data) => {
 		$('.oldBtn').parent().remove();
 		generateQuestion();
+	})
+	.fail(() => {
+		alert("ERROR!! refresh your browser!?");
 	});
 });
 
 $('.questionContainer').on('click', '.Api', function (event) {
 	// update the score.
-	const className = $(this).attr('class').substring(8);
+	const className = $(this).attr('class').substring(8, 9);
 	const targetCounter = `.counter${className}`;
 	const PlusValue = parseInt($(targetCounter).text(), 10) + 1;
 	$(targetCounter).text(PlusValue);
@@ -95,6 +102,6 @@ $('.questionContainer').on('click', '.Api', function (event) {
 
 		setTimeout(() => {
 			$(".mapContainer").addClass("move");
-		}, 1500);
+		}, 1000);
 	}
 });
