@@ -137,6 +137,7 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	background-image: url(cat-bg.png);
 }
 
 .questionContainer.nonactive {
@@ -185,7 +186,7 @@ body {
 .Api.active {
 	opacity: 0;
 	margin: 10px 0;
-	padding: 10px;
+	padding: 20px;
 	cursor: pointer;
 	border: 3px solid transparent;
 	border-radius: 5px;
