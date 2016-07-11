@@ -21,7 +21,118 @@
 
   	<!-- 網站標題 & Favicon &  -->
   	<title>25sprout Ultra Web Template｜網站架構模型</title>
+	<link rel="stylesheet" href="src/css/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css">
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0bRHwNAodtiyPliQVKcilrK9eItzn7iQ"></script>
 
+	<script>
+		let fbName;
+		let fbmin;
+		let fbmax;
+		// This is called with the results from from FB.getLoginStatus().
+		function statusChangeCallback(response) {
+			console.log('statusChangeCallback');
+			console.log(response);
+			// The response object is returned with a status field that lets the
+			// app know the current login status of the person.
+			// Full docs on the response object can be found in the documentation
+			// for FB.getLoginStatus().
+			if (response.status === 'connected') {
+			// Logged into your app and Facebook.
+				testAPI();
+			} else if (response.status === 'not_authorized') {
+			// The person is logged into Facebook, but not your app.
+				document.getElementById('status').innerHTML = 'Please log into this app.';
+			} else {
+				// The person is not logged into Facebook, so we're not sure if
+				// they are logged into this app or not.
+				document.getElementById('status').innerHTML = 'Please log into Facebook.';
+			}
+		}
+
+	  // This function is called when someone finishes with the Login
+	  // Button.  See the onlogin handler attached to it in the sample
+	  // code below.
+		function checkLoginState() {
+			FB.getLoginStatus( function(response) {
+				statusChangeCallback(response);
+			});
+		}
+
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId: '1230566620316768',
+				cookie: true,
+				xfbml: true,
+				version: 'v2.6',
+			});
+
+			FB.getLoginStatus(function(response) {
+				statusChangeCallback(response);
+			});
+		};
+		// Load the SDK asynchronously
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+
+		// Here we run a very simple test of the Graph API after login is
+		// successful.  See statusChangeCallback() for when this call is made.
+		function testAPI() {
+			console.log('Welcome!  Fetching your information.... ');
+			FB.api('/me', function(response) {
+			  console.log('Successful login for: ' + response.name);
+			  document.getElementById('status').innerHTML =
+			    '嗨, ' + response.name;
+			    fbName = response.name;
+			});
+			FB.api('/me?fields=age_range', function(response) {
+				console.log('Successful get age range: ' + response.age_range.min + '~' + response.age_range.max);
+				fbmin =	response.age_range.min;
+				fbmax =	response.age_range.max;
+			});
+		}
+
+	function CallAfterLogin(){
+	    //alert("2");
+	    FB.login(function(response) {
+	        if (response.status === "connected")
+	        {
+	            LodingAnimate(); //Animate login
+	            FB.api('/me', function(data) {
+					if(data.email == null) {
+						alert("You must allow us to access your email id!");
+						ResetAnimate();
+					} else {
+						AjaxResponse();
+					}
+				});
+			}
+			return true;
+	    });
+
+	}
+	function loginFacebook(){
+		FB.login(function(responses) {
+			if(responses.authResponse) {
+				FB.api('/me', function(response) {
+					console(response.age_range.min + '~' + response.age_range.max);
+				});
+				checkLoginState();
+				// window.location = "www.yahoo.com";
+				// window.open("www.yahoo.com","_self");
+			} else {
+				alert("some problem happen!?");
+			}
+		});
+	}
+	</script>
   	<!-- Google Analytics ***** 務必更新 GA Account No# *****
   	<script type="text/javascript">
   		// var _gaq = _gaq || [];
@@ -39,14 +150,51 @@
   	<!--[if lt IE 9]>
   	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   	<![endif]-->
-  </head>
-  <body>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/counter">Counter</a>
-        <a href="/react">React</a>
-    </nav>
+	</head>
+	<body>
+		<div class="nav">
+			<div class="navItem title"><img src="cat.png" alt="cat">SurveyCat | 問卷喵喵喵</div>
+			<div class="navItem fbCondition">
+				<div id="status"></div>
+				<button class="fbBtn" onclick="loginFacebook();"><i class="fa fa-facebook-official" aria-hidden="true"></i><span> Login</span></button>
+			</div>	
+		</div>
 
-	<div id="view"></div>
-  </body>
+
+		<div class="taipeiApi" style="display:none">
+			<ul class="pointCounter">
+				<li class="counter1">0</li>
+				<li class="counter2">0</li>
+				<li class="counter3">0</li>
+				<li class="counter4">0</li>
+			</ul>
+		</div>
+
+		<div class="container">
+			<div class="questionContainer">
+				<div class="questionStart">
+					<p> 哈哈哈哈哈哈哈哈 </p>
+					<button class="oldBtn">開始作答</button>		
+				</div>
+			</div>
+
+			<div class="mapContainer">
+				<div id="shop">
+					<div id="quote"></div>	
+					<ul>
+						<li id="shopName"></li>
+						<li id="shopADD"></li>
+						<li id="shopTel"></li>
+					</ul>
+				</div>
+				<div id="map-canvas"></div>
+			</div>
+		</div>
+
+		<div class="option">
+		<label for="voice">喵喵小姐語音</label>
+		<select name="voice" id="voice" placeholder='喵喵小姐語音'></select>
+		</div>
+	</body>
+	<script src="src/js/apiControl.js"></script>
 </html>

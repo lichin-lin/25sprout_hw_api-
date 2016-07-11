@@ -29,6 +29,7 @@ new WebpackDevServer(webpack(config), {
   hot: true,
   noInfo: true,
   historyApiFallback: true,
+  headers: {"Access-Control-Allow-Origin": "*"},
 }).listen(PORT, '0.0.0.0', function (err, result) {
   if (err) {
     return console.log(err);
