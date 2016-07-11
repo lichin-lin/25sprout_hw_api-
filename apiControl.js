@@ -4,10 +4,55 @@
 
 let oldman;
 let questionCounter = 0;
+const voiceSelect = document.getElementById('voice');
 const oldmanCounter = [0, 0, 0, 0];
 const tips = [[], [], [], [], []];
 const questionTitle = [`一、也許我住在這裡會感到開心？`, `二、他們當我的鄰居我會比較自在？`, `三、哪裡最熱鬧呢？`, `四、哪邊聽起來最讓老人住得舒適？`, `五、哪個機構聽起來可以把性命託付給他們？`];
 const contact = [[], [], [], []];
+
+// Fetch the list of voices and populate the voice options.
+function loadVoices() {
+  // Fetch the available voices.
+	const voices = speechSynthesis.getVoices();
+
+	voices.forEach((voice, i) => {
+	// Create a new option element.
+		const option = document.createElement('option');
+    // Set the options value and text.
+		option.value = voice.name;
+		option.innerHTML = voice.name;
+
+    // Add the option to the voice selector.
+		voiceSelect.appendChild(option);
+	});
+}
+
+// Execute loadVoices.
+loadVoices();
+
+// Chrome loads voices asynchronously.
+window.speechSynthesis.onvoiceschanged = (e) => {
+	loadVoices();
+};
+
+function speak(text) {
+  // Create a new instance of SpeechSynthesisUtterance.
+	const msg = new SpeechSynthesisUtterance();
+  // Set the attributes.
+	msg.text = text;
+	msg.volume = parseFloat(0.5);
+	msg.rate = parseFloat(7.5);
+	msg.pitch = parseFloat(1.5);
+  // If a voice has been selected, find the voice and set the
+  // utterance instance's voice attribute.
+	if (voiceSelect.value) {
+		// msg.voice = speechSynthesis.getVoices().filter((voice) => {
+		// 	return voice.name === voiceSelect.value;
+		// })[0];
+	}
+  // Queue this utterance.
+	window.speechSynthesis.speak(msg);
+}
 
 function generateQuestion() {
 	const form = $(`<form class="questionSection"><h2>${questionTitle[questionCounter]}</h2><div class="questions"></div></form>`); // eslint-disable-line max-len
@@ -78,7 +123,10 @@ $('.questionContainer').on('click', '.Api', function (event) {
 
 	// check if go to google map.
 	if (questionCounter !== 5) {
-		generateQuestion();
+		speak('下一題  喵喵');
+		setTimeout(() => {
+			generateQuestion();
+		}, 500);
 	} else {
 		let compareVal = 0;
 		for (let i = 0; i < 4; i++) {
@@ -93,7 +141,7 @@ $('.questionContainer').on('click', '.Api', function (event) {
 		$('.mapContainer').addClass('active');
 		$('.questionContainer').addClass('nonactive');
 		const age = 65 - fbmax;
-		document.getElementById('quote').innerHTML = `${fbName}, 大約再過${age}年您即將退休，也許你適合: `;
+		document.getElementById('quote').innerHTML = `${fbName}, 大約再過<span>${age}</span>年您即將退休，也許你適合:`;
 
 		console.log(`${contact[0][compareVal]}, ${contact[1][compareVal]}, ${contact[2][compareVal]}, ${contact[3][compareVal]}`);// eslint-disable-line max-len
 		const resultX = parseFloat(contact[2][compareVal]);
@@ -103,5 +151,11 @@ $('.questionContainer').on('click', '.Api', function (event) {
 		setTimeout(() => {
 			$(".mapContainer").addClass("move");
 		}, 1000);
+
+		setTimeout(() => {
+			const text = $('#quote').text();
+			speak(text);
+		});
 	}
 });
+
